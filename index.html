@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#07142c">
+  <title>North Star Hop · Btown Games</title>
+  <meta name="description" content="Hop glowing marbles across the northern sky in a quick 2–4 player star-board game from Btown Games.">
+  <meta property="og:title" content="North Star Hop">
+  <meta property="og:description" content="Marbles under the northern sky. Step, chain-hop, and race for the far point.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="icon-180.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon-180.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="sky" aria-hidden="true"><i></i><i></i><i></i></div>
+
+  <main id="app">
+    <section id="menu" class="screen">
+      <header class="brand">
+        <div class="eyebrow">A BTOWN GAMES NIGHT OUT</div>
+        <div class="title-star" aria-hidden="true">✦</div>
+        <h1>NORTH STAR<br><span>HOP</span></h1>
+        <p>Marbles under the northern sky</p>
+      </header>
+
+      <div class="menu-card">
+        <div class="mode-label">PASS &amp; PLAY</div>
+        <div class="player-buttons" aria-label="Pass and play players">
+          <button class="mode-btn compact" data-pass="2"><b>2</b><span>STARGAZERS</span></button>
+          <button class="mode-btn compact" data-pass="3"><b>3</b><span>STARGAZERS</span></button>
+          <button class="mode-btn compact" data-pass="4"><b>4</b><span>STARGAZERS</span></button>
+        </div>
+
+        <div class="mode-label">FOLLOW A GUIDING STAR</div>
+        <button class="mode-btn wide" data-bot="polaris">
+          <span class="mode-icon">✧</span><span><b>POLARIS</b><small>heads north by the brightest route</small></span>
+        </button>
+        <button class="mode-btn wide" data-bot="navigator">
+          <span class="mode-icon">🧭</span><span><b>THE NAVIGATOR</b><small>charts your reply before moving</small></span>
+        </button>
+
+        <div class="mode-label">ONLINE CREW</div>
+        <div class="online-buttons">
+          <button id="hostBtn" class="mode-btn compact"><b>＋</b><span>START A CREW</span></button>
+          <button id="joinBtn" class="mode-btn compact"><b>⌁</b><span>JOIN A CREW</span></button>
+        </div>
+        <button id="rejoinBtn" class="chip-btn hidden"></button>
+      </div>
+
+      <aside class="howto">
+        <span><b>1</b> Tap your marble</span>
+        <span><b>2</b> Step once or chain-hop</span>
+        <span><b>3</b> Fill the far point first</span>
+      </aside>
+
+      <footer>
+        A Btown Games production · <a href="https://play.btownbrief.com/" target="_blank" rel="noopener">More games →</a> · <a href="https://www.btownbrief.com" target="_blank" rel="noopener">Read the BTown Brief →</a>
+      </footer>
+    </section>
+
+    <section id="game" class="screen hidden">
+      <header class="game-top">
+        <button id="backBtn" class="chip-btn">← NIGHT SKY</button>
+        <div id="moveCount">0 HOPS</div>
+        <button id="rulesBtn" class="round-btn" aria-label="How to play">?</button>
+      </header>
+
+      <div id="turnCard" aria-live="polite">
+        <span id="turnDot"></span>
+        <div><small id="turnKicker">YOUR TURN</small><strong id="turnText">Choose a marble</strong></div>
+      </div>
+
+      <div id="legend" aria-label="Players"></div>
+
+      <div id="boardWrap">
+        <div class="star-plaque" aria-hidden="true"></div>
+        <div id="board" role="grid" aria-label="North Star Hop board"></div>
+      </div>
+
+      <p id="boardHint">Tap one of your glowing marbles</p>
+
+      <div id="result" class="result hidden" role="dialog" aria-modal="true" aria-live="assertive">
+        <div class="result-star">✦</div>
+        <div class="eyebrow">THE NORTH STAR SHINES ON</div>
+        <h2 id="resultTitle">PLAYER 1</h2>
+        <p id="resultCopy">The far point is full.</p>
+        <div class="result-actions">
+          <button id="resultBack" class="chip-btn">NIGHT SKY</button>
+          <button id="rematchBtn" class="primary-btn">HOP AGAIN</button>
+        </div>
+      </div>
+    </section>
+
+    <div id="onlinePanel" class="overlay hidden">
+      <div class="dialog-card">
+        <button id="opCancel" class="dialog-close" aria-label="Close">×</button>
+        <div class="dialog-star">✦</div>
+        <h2 id="opTitle">START A CREW</h2>
+        <label for="opName">YOUR STARGAZER NAME</label>
+        <input id="opName" maxlength="24" autocomplete="nickname" placeholder="Moonbeam">
+        <div id="opSeatsWrap">
+          <label>PHONES UNDER THE SKY</label>
+          <div id="opSeats" class="seat-btns" role="group" aria-label="Phones under the sky">
+            <button class="seat-btn selected" data-seats="2" aria-pressed="true">2</button>
+            <button class="seat-btn" data-seats="3" aria-pressed="false">3</button>
+            <button class="seat-btn" data-seats="4" aria-pressed="false">4</button>
+          </div>
+        </div>
+        <div id="opCodeWrap" class="hidden">
+          <label for="opCode">CREW CODE</label>
+          <input id="opCode" maxlength="4" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="N0VA">
+        </div>
+        <div id="opError" class="form-error hidden"></div>
+        <button id="opGo" class="primary-btn">GET A CODE</button>
+      </div>
+    </div>
+
+    <div id="lobby" class="overlay hidden">
+      <div class="dialog-card lobby-card">
+        <div class="dialog-star">✦</div>
+        <h2>YOUR CREW CODE</h2>
+        <div id="lobbyCode">N0VA</div>
+        <p id="lobbyHint">Share it with the rest of your crew.</p>
+        <div class="lobby-label">UNDER THE SKY</div>
+        <ul id="lobbyNames" aria-live="polite"></ul>
+        <button id="inviteBtn" class="primary-btn">📲 SEND AN INVITE</button>
+        <button id="lobbyCancel" class="text-btn">CALL IT OFF</button>
+      </div>
+    </div>
+
+    <div id="rulesPanel" class="overlay hidden">
+      <div class="dialog-card rules-card">
+        <button id="rulesClose" class="dialog-close" aria-label="Close">×</button>
+        <div class="dialog-star">✦</div>
+        <h2>HOW TO HOP</h2>
+        <p><b>Step</b> into any empty neighboring hole.</p>
+        <p><b>Hop</b> over any neighboring marble—any color—into the empty hole beyond. Keep hopping as far as the glowing dots allow.</p>
+        <p><b>Win</b> by moving all 10 of your marbles into the point directly opposite your start. The first finisher ends the game.</p>
+        <button id="rulesGotIt" class="primary-btn">GOT IT</button>
+      </div>
+    </div>
+  </main>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
+

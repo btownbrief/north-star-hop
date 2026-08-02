@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180">
+  <defs>
+    <radialGradient id="sky" cx="50%" cy="30%" r="80%"><stop stop-color="#173c70"/><stop offset="1" stop-color="#061127"/></radialGradient>
+    <radialGradient id="marble" cx="32%" cy="25%" r="75%"><stop stop-color="#efffff"/><stop offset=".22" stop-color="#7dffda"/><stop offset="1" stop-color="#11927d"/></radialGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="180" height="180" rx="38" fill="url(#sky)"/>
+  <g fill="#c5dcff" opacity=".7"><circle cx="27" cy="31" r="1.5"/><circle cx="145" cy="27" r="1"/><circle cx="155" cy="83" r="1.5"/><circle cx="33" cy="139" r="1"/></g>
+  <path d="M90 18l16 38 42-5-26 33 26 33-42-5-16 39-16-39-42 5 26-33-26-33 42 5z" fill="#132e52" stroke="#79d9d0" stroke-opacity=".45" stroke-width="3"/>
+  <g filter="url(#glow)" fill="url(#marble)"><circle cx="90" cy="41" r="8"/><circle cx="80" cy="58" r="8"/><circle cx="100" cy="58" r="8"/><circle cx="70" cy="75" r="8"/><circle cx="90" cy="75" r="8"/><circle cx="110" cy="75" r="8"/></g>
+  <path d="M90 91l4 10 11 1-8 7 3 11-10-6-10 6 3-11-8-7 11-1z" fill="#ffe8a3"/>
+</svg>
+

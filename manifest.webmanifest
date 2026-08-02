@@ -1,0 +1,14 @@
+{
+  "name": "North Star Hop",
+  "short_name": "North Star Hop",
+  "description": "Marbles under the northern sky — a Btown Games star-board race.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#061127",
+  "theme_color": "#07142c",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" },
+    { "src": "icon-180.png", "sizes": "180x180", "type": "image/png" }
+  ]
+}
+
