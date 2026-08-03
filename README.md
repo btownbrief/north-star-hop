@@ -18,6 +18,7 @@ Modes include 2–4 player pass-and-play, two 2-player bots (Polaris and the str
 - `js/engine.js` — pure rules over one JSON-serializable state object.
 - `js/bot.js` — bot choices made only through engine exports.
 - `js/main.js` — rendering, input, local mode flow, and room wiring.
+- `js/leaderboard.js` — monthly leaderboard client (Supabase); vs-bot wins only, no accounts.
 - `js/rooms.js` — untouched vendored Btown rooms client.
 - `scripts/rooms-shim.mjs` — untouched local backend stand-in.
 
