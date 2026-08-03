@@ -211,7 +211,7 @@ function renderTurn() {
   } else {
     $('turnKicker').textContent = mode === 'pass' ? `${playerName(state.turn).toUpperCase()}'S TURN` : 'YOUR TURN';
     $('turnText').textContent = selected ? `${movesForSelection().length} routes glow` : 'Choose a marble';
-    $('boardHint').textContent = selected ? 'Tap a glowing landing spot' : 'Tap one of your glowing marbles';
+    $('boardHint').textContent = selected ? 'Tap or drop it on a glowing landing spot' : 'Tap or drag one of your glowing marbles';
   }
 }
 
@@ -287,6 +287,75 @@ function leaveOnline(notify) {
   $('backBtn').dataset.armed = '';
   $('backBtn').textContent = '← NIGHT SKY';
 }
+
+/* ------------------------------------------------------------- drag */
+
+// Marbles move by tap-tap or by drag. Listeners live on window so a
+// pointerup outside the board can never strand a drag mid-flight.
+const ghost = document.createElement('div');
+ghost.className = 'drag-ghost hidden';
+document.body.appendChild(ghost);
+
+let drag = null; // { from, pointerId, startX, startY, lifted, overKey }
+
+boardEl.addEventListener('pointerdown', (event) => {
+  if (!event.isPrimary || drag || !canMove()) return;
+  const key = event.target.closest('.hole')?.dataset.key;
+  if (!key || state.cells[key] !== state.turn) return;
+  if (!legalMoves(state).some((move) => move.from === key)) return;
+  drag = { from: key, pointerId: event.pointerId, startX: event.clientX, startY: event.clientY, lifted: false, overKey: null };
+});
+
+function holeKeyAt(x, y) {
+  return document.elementFromPoint(x, y)?.closest('.hole')?.dataset.key ?? null;
+}
+
+function liftMarble() {
+  drag.lifted = true;
+  selected = drag.from;
+  render();
+  const rect = holes.get(drag.from).getBoundingClientRect();
+  ghost.style.width = `${rect.width + 3}px`;
+  ghost.style.setProperty('--piece-color', COLOR_VALUES[state.turn]);
+  ghost.classList.remove('hidden');
+}
+
+window.addEventListener('pointermove', (event) => {
+  if (!drag || event.pointerId !== drag.pointerId) return;
+  if (!drag.lifted) {
+    if (Math.hypot(event.clientX - drag.startX, event.clientY - drag.startY) < 7) return;
+    liftMarble();
+  }
+  ghost.style.left = `${event.clientX}px`;
+  ghost.style.top = `${event.clientY}px`;
+  const overKey = holeKeyAt(event.clientX, event.clientY);
+  if (overKey !== drag.overKey) {
+    holes.get(drag.overKey)?.classList.remove('drag-over');
+    drag.overKey = overKey;
+    const target = holes.get(overKey);
+    if (target?.classList.contains('reachable')) target.classList.add('drag-over');
+  }
+  holes.get(drag.from)?.classList.add('drag-source');
+});
+
+function endDrag(event, dropped) {
+  if (!drag || event.pointerId !== drag.pointerId) return;
+  const { from, lifted, overKey } = drag;
+  drag = null;
+  ghost.classList.add('hidden');
+  holes.get(from)?.classList.remove('drag-source');
+  holes.get(overKey)?.classList.remove('drag-over');
+  if (!lifted) return; // a plain tap — the click handler owns it
+  const to = dropped ? holeKeyAt(event.clientX, event.clientY) : null;
+  const move = to && canMove() && state.cells[from] === state.turn
+    ? legalMoves(state).find((candidate) => candidate.from === from && candidate.to === to)
+    : null;
+  if (move) playMove(move);
+  else render();
+}
+
+window.addEventListener('pointerup', (event) => endDrag(event, true));
+window.addEventListener('pointercancel', (event) => endDrag(event, false));
 
 document.querySelectorAll('[data-pass]').forEach((button) => button.addEventListener('click', () => startLocal('pass', +button.dataset.pass)));
 document.querySelectorAll('[data-bot]').forEach((button) => button.addEventListener('click', () => startLocal(button.dataset.bot, 2)));
